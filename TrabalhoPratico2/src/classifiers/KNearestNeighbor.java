@@ -10,10 +10,12 @@ import weka.core.Instances;
 public class KNearestNeighbor extends Classifier {
 	private int partitions;
 	private int iterations;
+	private int neighbors;
 	
-	public KNearestNeighbor(int partitions, int iterations, String dataSourceName, int classIndex, int classPossibilities){
+	public KNearestNeighbor(int partitions, int iterations, String dataSourceName, int classIndex, int classPossibilities, int neighbors){
 		this.partitions = partitions;
 		this.iterations = iterations;
+		this.neighbors = neighbors;
 		super.dataSource = prepareDataSource(dataSourceName, classIndex);
 		super.classIndex = classIndex;
 		super.classPossibilities = classPossibilities;
@@ -22,11 +24,10 @@ public class KNearestNeighbor extends Classifier {
 	
 	public void classify(){
 		super.confusionMatrix = new int[classPossibilities][classPossibilities];
+		IBk nereastNeighbor = new IBk(neighbors);
 		for (int i = 0; i < iterations; i++) {
-			dataSource.resample(new Random());
 			Instances dataTrain = dataSource.trainCV(partitions,i);
 			Instances dataTest = dataSource.testCV(partitions, i);
-			IBk nereastNeighbor = new IBk(this.partitions);
 			int realClass = 0;
 			int resultClass = 0;
 			try {
@@ -43,7 +44,7 @@ public class KNearestNeighbor extends Classifier {
 			}
 		}
 	}
-
+	
 	private Instances prepareDataSource(String dataSourceName, int classIndex){
 		Instances dataSource = null; 
 		try {
@@ -70,5 +71,13 @@ public class KNearestNeighbor extends Classifier {
 
 	public void setIterations(int iterations) {
 		this.iterations = iterations;
+	}
+
+	public int getNeighbors() {
+		return neighbors;
+	}
+
+	public void setNeighbors(int neighbors) {
+		this.neighbors = neighbors;
 	}
 }

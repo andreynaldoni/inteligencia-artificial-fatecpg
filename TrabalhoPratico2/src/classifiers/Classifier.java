@@ -21,21 +21,21 @@ public class Classifier {
 			lineSum = 0;
 			for (int j = 0; j < classPossibilities; j++) {
 				results.append(this.confusionMatrix[i][j])
-		  	  		   .append("\t\t");
+		  	  		   .append("\t");
 				lineSum += this.confusionMatrix[i][j];
 				lastLine[j] += this.confusionMatrix[i][j];
 			}
-			results.append("|\t\t")
+			results.append("|\t")
 				   .append(lineSum)
 				   .append("\n");
 		}
-		results.append("---------------------------------------------------------------------------------------------\n");
+		results.append("------------------------------------------------\n");
 		for (int i : lastLine) {
 			results.append(i)
-			  	   .append("\t\t");
+			  	   .append("\t");
 			dataSize += i;
 		}
-		results.append("|\t\t")
+		results.append("|\t")
 			   .append(dataSize)
 			   .append("\n\n")
 			   .append("Accuracy: \t")
@@ -49,7 +49,7 @@ public class Classifier {
 				   .append(i)
 				   .append(":\tPrecision: ")
 				   .append(String.format("%.3f", calculatePrecision(i)))
-				   .append("\t\t\t")
+				   .append("\t")
 				   .append("Revocation: ")
 				   .append(String.format("%.3f", calculateRevocation(i)));
 		}
@@ -72,17 +72,19 @@ public class Classifier {
 	public Double calculatePrecision(int varIndex){
 		int realTotal = 0;
 		for(int i = 0; i < classPossibilities; i++){
-			realTotal += confusionMatrix[i][varIndex];
+			realTotal += confusionMatrix[varIndex][i];
 		}
 		return precision = (double)confusionMatrix[varIndex][varIndex] / realTotal;
 	}
 	
 	public Double calculateRevocation(int varIndex){
 		int realTotal = 0;
+		int classifiedTotal = 0;
 		for(int i = 0; i < classPossibilities; i++){
 			realTotal += confusionMatrix[varIndex][i];
+			classifiedTotal += confusionMatrix[i][varIndex];
 		}
-		return revocation = (double)confusionMatrix[varIndex][varIndex] / realTotal;
+		return revocation = (double)classifiedTotal / realTotal;
 	}
 	
 	public int getClassIndex(){
